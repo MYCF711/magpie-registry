@@ -3,10 +3,29 @@
 A copy of [magpie-community/plugins](https://github.com/magpie-community/plugins)'s
 `registry.json`, plus the packages that are not in it.
 
-magpie fetches its community plugin list from one URL and replaces its cached copy
-wholesale. A package that is not in that list still installs, but its card shows only
-the npm or GitHub metadata: no licence, no source button, and the title falls back to
-the package name.
+## Why this exists
+
+magpie fetches its community plugin list from **one** URL and replaces its cached copy
+wholesale, every few hours. A package that is not in that list still installs and
+works, but its card shows only the npm or GitHub metadata:
+
+| Card element | Comes from the registry | Without an entry |
+|---|---|---|
+| Title | `name` | falls back to the package name |
+| Licence | the entry | not shown |
+| Source button | the entry | not shown |
+| Summary | `summary` | the npm description |
+
+Hand-editing `~/.cache/magpie/plugin-market.json` does not last — measured on this
+machine, a patch was gone within one second of magpie's first fetch.
+
+This repository serves that list with **the official entries untouched plus my own**,
+so a user gets complete cards by setting one variable. It is a stopgap: it asks the
+user to configure something, and it asks a maintainer to run a workflow.
+
+The underlying problem is written up here, with the directions I think would remove
+the need for this repository entirely:
+**[magpie-community/plugins#394](https://github.com/magpie-community/plugins/issues/394)**
 
 ## Using it
 
