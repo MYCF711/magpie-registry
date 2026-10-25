@@ -1,0 +1,62 @@
+name: sync
+
+on:
+  schedule:
+    # 官方 registry 更新不规律；每小时对齐一次足够
+    - cron: "17 * * * *"
+  workflow_dispatch:
+  push:
+    paths:
+      - local.json
+
+permissions:
+  contents: write
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Fetch the official registry
+        run: |
+          curl -fsSL \
+            https://raw.githubusercontent.com/magpie-community/plugins/main/registry.json \
+            -o official.json
+          echo "official: $(jq '.plugins | length' official.json) entries"
+
+      - name: Merge in the local entries
+        run: |
+          # local.json holds the packages this registry adds.
+          #
+          # They are appended after the official ones, and an official entry
+          # with the same package name is dropped rather than duplicated — so
+          # a package that later joins the community list does not appear
+          # twice.
+          jq -s '
+            .[0] as $official
+            | .[1] as $local
+            | ($local.plugins // $local // []) as $mine
+            | ($mine | map(.package)) as $names
+            | {
+                version: ($official.version // 1),
+                plugins: (
+                  ($official.plugins | map(select(.package as $p | ($names | index($p)) | not)))
+                  + $mine
+                )
+              }
+          ' official.json local.json > registry.json
+          echo "merged: $(jq '.plugins | length' registry.json) entries"
+
+      - name: Commit when it changed
+        run: |
+          rm -f official.json
+          if git diff --quiet registry.json; then
+            echo "no change"
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add registry.json
+          git commit -m "sync with the official registry"
+          git push

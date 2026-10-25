@@ -1,0 +1,25 @@
+{
+  "plugins": [
+    {
+      "package": "officeace-auth",
+      "name": "OfficeAce",
+      "providers": [
+        "officeace"
+      ],
+      "community": true,
+      "summary": {
+        "en": "Unofficial: OfficeAce (Huawei Cloud AgentArts) coding plans with Huawei Cloud OAuth sign-in — GLM, DeepSeek, Kimi, Qwen3, openPangu and more, live models with credit rates, credit usage and daily check-in.",
+        "zh": "非官方：OfficeAce（华为云 AgentArts）编码套餐，华为云 OAuth 登录；GLM、DeepSeek、Kimi、Qwen3、openPangu 等 26 个模型，实时模型与积分倍率、积分用量和每日签到。"
+      }
+    },
+    {
+      "package": "magpie-plugin-template",
+      "name": "Plugin Template",
+      "community": true,
+      "summary": {
+        "en": "A magpie / OpenCode provider plugin template with all of magpie's hooks implemented — sign-in, renewal, request takeover, usage, daily check-in, per-account models — and five TODO functions for the vendor-specific parts.",
+        "zh": "magpie / OpenCode 供应商插件模板，magpie 的钩子全实现（登录、续期、请求接管、额度、签到、每账号模型），厂商相关部分只留五个 TODO 函数。"
+      }
+    }
+  ]
+}
